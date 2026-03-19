@@ -206,6 +206,30 @@ namespace SAM.API.Wrappers
         }
         #endregion
 
+        #region GetNumAchievements
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate uint NativeGetNumAchievements(IntPtr self);
+
+        public uint GetNumAchievements()
+        {
+            return this.Call<uint, NativeGetNumAchievements>(this.Functions.GetNumAchievements, this.ObjectAddress);
+        }
+        #endregion
+
+        #region GetAchievementName
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate IntPtr NativeGetAchievementName(IntPtr self, uint index);
+
+        public string GetAchievementName(uint index)
+        {
+            IntPtr result = this.Call<IntPtr, NativeGetAchievementName>(
+                this.Functions.GetAchievementName,
+                this.ObjectAddress,
+                index);
+            return NativeStrings.PointerToString(result);
+        }
+        #endregion
+
         #region RequestUserStats
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate CallHandle NativeRequestUserStats(IntPtr self, ulong steamIdUser);

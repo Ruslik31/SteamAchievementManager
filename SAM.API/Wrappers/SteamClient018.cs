@@ -180,7 +180,8 @@ namespace SAM.API.Wrappers
         #endregion
 
         #region GetISteamApps
-        private delegate IntPtr NativeGetISteamApps(int user, int pipe, IntPtr version);
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate IntPtr NativeGetISteamApps(IntPtr self, int user, int pipe, IntPtr version);
 
         private TClass GetISteamApps<TClass>(int user, int pipe, string version)
             where TClass : INativeWrapper, new()
@@ -189,6 +190,7 @@ namespace SAM.API.Wrappers
             {
                 IntPtr address = this.Call<IntPtr, NativeGetISteamApps>(
                     this.Functions.GetISteamApps,
+                    this.ObjectAddress,
                     user,
                     pipe,
                     nativeVersion.Handle);
@@ -210,6 +212,33 @@ namespace SAM.API.Wrappers
         public SteamApps008 GetSteamApps008(int user, int pipe)
         {
             return this.GetISteamApps<SteamApps008>(user, pipe, "STEAMAPPS_INTERFACE_VERSION008");
+        }
+        #endregion
+
+        #region GetISteamFriends
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate IntPtr NativeGetISteamFriends(IntPtr self, int user, int pipe, IntPtr version);
+
+        private TClass GetISteamFriends<TClass>(int user, int pipe, string version)
+            where TClass : INativeWrapper, new()
+        {
+            using (var nativeVersion = NativeStrings.StringToStringHandle(version))
+            {
+                IntPtr address = this.Call<IntPtr, NativeGetISteamFriends>(
+                    this.Functions.GetISteamFriends,
+                    this.ObjectAddress,
+                    user,
+                    pipe,
+                    nativeVersion.Handle);
+                TClass result = new();
+                result.SetupFunctions(address);
+                return result;
+            }
+        }
+
+        public SteamFriends015 GetSteamFriends015(int user, int pipe)
+        {
+            return this.GetISteamFriends<SteamFriends015>(user, pipe, "SteamFriends015");
         }
         #endregion
     }

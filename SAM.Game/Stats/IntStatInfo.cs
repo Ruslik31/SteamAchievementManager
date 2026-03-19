@@ -20,6 +20,8 @@
  *    distribution.
  */
 
+using System.Globalization;
+
 namespace SAM.Game.Stats
 {
     internal class IntStatInfo : StatInfo
@@ -32,13 +34,21 @@ namespace SAM.Game.Stats
             get => this.IntValue;
             set
             {
-                var i = int.Parse((string)value, System.Globalization.CultureInfo.CurrentCulture);
-                if ((this.Permission & 2) != 0 &&
-                    this.IntValue != i)
+                if (value is int iVal)
                 {
-                    throw new StatIsProtectedException();
+                    this.IntValue = iVal;
+                    return;
                 }
-                this.IntValue = i;
+
+                if (int.TryParse(value?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out int i) ||
+                    int.TryParse(value?.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out i))
+                {
+                    if ((this.Permission & 2) != 0 && this.IntValue != i)
+                    {
+                        throw new StatIsProtectedException();
+                    }
+                    this.IntValue = i;
+                }
             }
         }
 

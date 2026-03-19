@@ -20,6 +20,9 @@
  *    distribution.
  */
 
+using System;
+using System.Globalization;
+
 namespace SAM.Game.Stats
 {
     internal class FloatStatInfo : StatInfo
@@ -32,16 +35,20 @@ namespace SAM.Game.Stats
             get => this.FloatValue;
             set
             {
-                var f = float.Parse((string)value, System.Globalization.CultureInfo.CurrentCulture);
-                if ((this.Permission & 2) != 0 &&
-                    this.FloatValue.Equals(f) == false)
+                if (value is float fVal)
                 {
-                    throw new StatIsProtectedException();
+                    this.FloatValue = fVal;
+                    return;
                 }
-                this.FloatValue = f;
+
+                if (float.TryParse(value?.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out float f) ||
+                    float.TryParse(value?.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out f))
+                {
+                    this.FloatValue = f;
+                }
             }
         }
 
-        public override bool IsModified => this.FloatValue.Equals(this.OriginalValue) == false;
+        public override bool IsModified => Math.Abs(this.FloatValue - this.OriginalValue) > 0.00001f;
     }
 }

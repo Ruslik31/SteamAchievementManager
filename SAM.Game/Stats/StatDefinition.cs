@@ -20,6 +20,8 @@
  *    distribution.
  */
 
+using System;
+
 namespace SAM.Game.Stats
 {
     internal abstract class StatDefinition
@@ -27,5 +29,32 @@ namespace SAM.Game.Stats
         public string Id;
         public string DisplayName;
         public int Permission;
+
+        public static StatDefinition Load(KeyValue kv, string language)
+        {
+            if (kv == null) return null;
+            string type = kv["type"].AsString("int");
+            int permission = kv["permission"].AsInteger(0);
+
+            StatDefinition stat = type.Equals("float", StringComparison.OrdinalIgnoreCase)
+                ? new FloatStatDefinition()
+                : new IntegerStatDefinition();
+
+            stat.Id = kv["name"].AsString(kv.Name);
+            stat.Permission = permission;
+
+            var display = kv["display"];
+            if (display != null)
+            {
+                string name = AchievementDefinition.GetLocalizedString(display["name"], language, stat.Id);
+                stat.DisplayName = name ?? stat.Id;
+            }
+            else
+            {
+                stat.DisplayName = stat.Id;
+            }
+
+            return stat;
+        }
     }
 }

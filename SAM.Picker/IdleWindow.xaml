@@ -1,0 +1,265 @@
+<Window x:Class="SAM.Picker.IdleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Steam Achievement Manager 8.0 | Менеджер фарма часов"
+        Height="550" Width="850" MinWidth="650" MinHeight="400"
+        WindowStartupLocation="CenterOwner"
+        Background="#10141d" Foreground="#dcdedf">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="36" ResizeBorderThickness="8" GlassFrameThickness="0" CornerRadius="0"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <!-- Steam Color Palette -->
+            <SolidColorBrush x:Key="BgDark" Color="#10141d" />
+            <SolidColorBrush x:Key="BgHeader" Color="#171d25" />
+            <SolidColorBrush x:Key="BgCard" Color="#1e2633" />
+            <SolidColorBrush x:Key="BorderCard" Color="#2a384e" />
+            <SolidColorBrush x:Key="SteamBlue" Color="#66c0f4" />
+            <SolidColorBrush x:Key="SteamBlueHover" Color="#1a9fff" />
+            <SolidColorBrush x:Key="SteamGreen" Color="#5c7e10" />
+            <SolidColorBrush x:Key="SteamRed" Color="#802020" />
+            <SolidColorBrush x:Key="TextLight" Color="#dcdedf" />
+            <SolidColorBrush x:Key="TextMuted" Color="#8f98a0" />
+            <SolidColorBrush x:Key="CloseBtnHover" Color="#e81123" />
+
+            <!-- Custom ScrollBar Style -->
+            <Style TargetType="ScrollBar">
+                <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid x:Name="Bg" Background="Transparent" SnapsToDevicePixels="true">
+                                <Track x:Name="PART_Track" IsDirectionReversed="true">
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Focusable="False">
+                                            <RepeatButton.Template>
+                                                <ControlTemplate TargetType="RepeatButton">
+                                                    <Border Background="Transparent"/>
+                                                </ControlTemplate>
+                                            </RepeatButton.Template>
+                                        </RepeatButton>
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb x:Name="Thumb" MinHeight="45" MinWidth="45">
+                                            <Thumb.Template>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Border x:Name="ThumbBorder" Background="#2e3e52" BorderBrush="#4a617c" BorderThickness="1" CornerRadius="6" Margin="1"/>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource SteamBlue}"/>
+                                                            <Setter TargetName="ThumbBorder" Property="BorderBrush" Value="#80d0ff"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsDragging" Value="True">
+                                                            <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource SteamBlueHover}"/>
+                                                            <Setter TargetName="ThumbBorder" Property="BorderBrush" Value="#ffffff"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Thumb.Template>
+                                        </Thumb>
+                                    </Track.Thumb>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Focusable="False">
+                                            <RepeatButton.Template>
+                                                <ControlTemplate TargetType="RepeatButton">
+                                                    <Border Background="Transparent"/>
+                                                </ControlTemplate>
+                                            </RepeatButton.Template>
+                                        </RepeatButton>
+                                    </Track.IncreaseRepeatButton>
+                                </Track>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Orientation" Value="Horizontal">
+                                    <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="False"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="Orientation" Value="Vertical">
+                        <Setter Property="Width" Value="12"/>
+                        <Setter Property="Height" Value="Auto"/>
+                    </Trigger>
+                    <Trigger Property="Orientation" Value="Horizontal">
+                        <Setter Property="Width" Value="Auto"/>
+                        <Setter Property="Height" Value="12"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- Custom Button Style -->
+            <Style x:Key="SteamBtn" TargetType="Button">
+                <Setter Property="Background" Value="#212d3d" />
+                <Setter Property="Foreground" Value="{StaticResource TextLight}" />
+                <Setter Property="BorderBrush" Value="#314156" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="12,6" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#2a3f5a" />
+                                    <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource SteamBlue}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Red Stop Button Style -->
+            <Style x:Key="SteamRedBtn" TargetType="Button" BasedOn="{StaticResource SteamBtn}">
+                <Setter Property="Background" Value="{StaticResource SteamRed}"/>
+                <Setter Property="BorderBrush" Value="#a03030"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource BgDark}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36"/>  <!-- Titlebar -->
+            <RowDefinition Height="Auto"/> <!-- Main Header / Toolbar -->
+            <RowDefinition Height="*"/>    <!-- Farming Games Grid -->
+            <RowDefinition Height="32"/>  <!-- Statusbar -->
+        </Grid.RowDefinitions>
+
+        <!-- Custom Titlebar -->
+        <Grid Grid.Row="0" Background="{StaticResource BgHeader}" MouseLeftButtonDown="OnTitleBarMouseDown">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="10,0,0,0" VerticalAlignment="Center">
+                <Image x:Name="ImgAppIcon" Width="18" Height="18" Margin="0,0,8,0"/>
+                <TextBlock x:Name="TxtTitle" Text="Steam Achievement Manager 8.0 | Менеджер фарма часов"
+                           Foreground="{StaticResource TextLight}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Window Action Buttons -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
+                <Button Click="OnMinimizeClick" Width="40" Height="36" Background="Transparent" BorderThickness="0" Foreground="{StaticResource TextMuted}" Cursor="Hand">
+                    <TextBlock Text="─" FontSize="10"/>
+                </Button>
+                <Button Click="OnMaximizeClick" Width="40" Height="36" Background="Transparent" BorderThickness="0" Foreground="{StaticResource TextMuted}" Cursor="Hand">
+                    <TextBlock Text="☐" FontSize="11"/>
+                </Button>
+                <Button Click="OnCloseClick" Width="40" Height="36" Background="Transparent" BorderThickness="0" Foreground="{StaticResource TextMuted}" Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource CloseBtnHover}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <TextBlock Text="✕" FontSize="11"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Main Toolbar -->
+        <Border Grid.Row="1" Background="#161f2c" Padding="15,10" BorderBrush="#2a384e" BorderThickness="0,1,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🎮 Менеджер фарма часов" Foreground="{StaticResource SteamBlue}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                    <Border Background="#1a2634" CornerRadius="4" Padding="8,4" Margin="0,0,10,0">
+                        <TextBlock x:Name="TxtGamesCount" Text="Фармится игр: 0" Foreground="{StaticResource TextLight}" FontSize="11" FontWeight="SemiBold"/>
+                    </Border>
+                    <Border Background="#1a2634" CornerRadius="4" Padding="8,4">
+                        <TextBlock x:Name="TxtTotalTime" Text="⏱️ Время фарма: 00:00:00" Foreground="{StaticResource SteamBlue}" FontSize="11" FontWeight="Bold"/>
+                    </Border>
+                </StackPanel>
+
+                <Button Grid.Column="1" Style="{StaticResource SteamRedBtn}" Click="OnStopFarmingClick">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🛑 " Margin="0,0,4,0"/>
+                        <TextBlock Text="Остановить фарм"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Main Content: Farming Games Cards Grid -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="15">
+            <ItemsControl x:Name="ItemsFarmingGames">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="220" Height="120" Margin="8" Background="{StaticResource BgCard}"
+                                CornerRadius="8" BorderBrush="#5c7e10" BorderThickness="2">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Capsule Image & Active Green Indicator -->
+                                <Border Grid.Row="0" CornerRadius="8,8,0,0" ClipToBounds="True" Background="#141a24">
+                                    <Grid>
+                                        <Image Source="{Binding ImageUrl}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Border Background="#a010141d" CornerRadius="4" Padding="6,2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="6">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="● " Foreground="#72a112" FontSize="10" FontWeight="Bold"/>
+                                                <TextBlock Text="Фармится" Foreground="#a6e22e" FontSize="10" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Game Title & Timer -->
+                                <Border Grid.Row="1" Background="#141a24" CornerRadius="0,0,8,8" Padding="8,4">
+                                    <Grid VerticalAlignment="Center">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Text="{Binding Name}" Foreground="{StaticResource TextLight}" FontSize="11"
+                                                   TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" FontWeight="SemiBold" ToolTip="{Binding Name}"/>
+                                        <TextBlock Grid.Row="1" Text="{Binding FarmingTimeText}" Foreground="{StaticResource SteamBlue}" FontSize="10" Margin="0,2,0,0"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Statusbar -->
+        <Border Grid.Row="3" Background="{StaticResource BgHeader}" Padding="15,0" BorderBrush="#2a384e" BorderThickness="0,1,0,0">
+            <Grid VerticalAlignment="Center">
+                <TextBlock x:Name="TxtStatus" Text="Фарм часов активен в фоновом режиме." Foreground="{StaticResource TextMuted}" FontSize="11" HorizontalAlignment="Left"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

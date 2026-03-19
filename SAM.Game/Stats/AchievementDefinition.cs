@@ -20,6 +20,10 @@
  *    distribution.
  */
 
+using System;
+using System.Collections.Generic;
+using SAM.API;
+
 namespace SAM.Game.Stats
 {
     internal class AchievementDefinition
@@ -31,6 +35,92 @@ namespace SAM.Game.Stats
         public string IconLocked;
         public bool IsHidden;
         public int Permission;
+
+        public static string GetLocalizedString(KeyValue kv, string language, string defaultValue)
+        {
+            if (kv == null) return defaultValue;
+            var activeLanguage = API.LanguageManager.CurrentLanguage ?? "english";
+
+            var candidates = new List<string> { activeLanguage, language };
+
+            if (activeLanguage.Equals("russian", StringComparison.OrdinalIgnoreCase) || activeLanguage.Equals("ru", StringComparison.OrdinalIgnoreCase))
+            {
+                candidates.Add("russian");
+                candidates.Add("ru");
+                candidates.Add("rus");
+            }
+            else if (activeLanguage.Equals("english", StringComparison.OrdinalIgnoreCase) || activeLanguage.Equals("en", StringComparison.OrdinalIgnoreCase))
+            {
+                candidates.Add("english");
+                candidates.Add("en");
+                candidates.Add("eng");
+            }
+
+            candidates.Add("english");
+            candidates.Add("en");
+
+            foreach (var lang in candidates)
+            {
+                if (string.IsNullOrEmpty(lang)) continue;
+                var child = kv[lang];
+                if (child != null)
+                {
+                    var val = child.AsString("");
+                    if (string.IsNullOrEmpty(val) == false)
+                    {
+                        return val;
+                    }
+                }
+            }
+
+            var direct = kv.AsString("");
+            if (string.IsNullOrEmpty(direct) == false)
+            {
+                return direct;
+            }
+
+            if (kv.Children != null)
+            {
+                foreach (var child in kv.Children)
+                {
+                    var childVal = child.AsString("");
+                    if (string.IsNullOrEmpty(childVal) == false)
+                    {
+                        return childVal;
+                    }
+                }
+            }
+
+            return defaultValue;
+        }
+
+        public static AchievementDefinition Load(KeyValue kv, string language)
+        {
+            if (kv == null) return null;
+
+            var def = new AchievementDefinition
+            {
+                Id = kv.Name,
+                Permission = kv["permission"].AsInteger(0),
+                IsHidden = kv["permission"].AsInteger(0) != 0 || kv["hidden"].AsInteger(0) != 0
+            };
+
+            var display = kv["display"];
+            if (display != null)
+            {
+                def.Name = GetLocalizedString(display["name"], language, def.Id);
+                def.Description = GetLocalizedString(display["desc"], language, "");
+                def.IconNormal = display["icon"].AsString("");
+                def.IconLocked = display["icon_gray"].AsString("");
+                def.IsHidden = display["hidden"].AsBoolean(false);
+            }
+            else
+            {
+                def.Name = def.Id;
+            }
+
+            return def;
+        }
 
         public override string ToString()
         {

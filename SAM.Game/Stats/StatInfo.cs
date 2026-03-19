@@ -31,6 +31,22 @@ namespace SAM.Game.Stats
         public bool IsIncrementOnly { get; set; }
         public int Permission { get; set; }
 
+        public string ValueText
+        {
+            get => this.Value?.ToString() ?? "0";
+            set
+            {
+                if (value != null)
+                {
+                    try
+                    {
+                        this.Value = value;
+                    }
+                    catch { }
+                }
+            }
+        }
+
         public string Extra
         {
             get
