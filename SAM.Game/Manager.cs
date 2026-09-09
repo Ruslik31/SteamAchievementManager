@@ -98,12 +98,87 @@ namespace SAM.Game
                 base.Text += " | " + this._GameId.ToString(CultureInfo.InvariantCulture);
             }
 
+            this.InitializeLanguageDropdown();
+            this.ApplyLocalization();
+
             this._UserStatsReceivedCallback = client.CreateAndRegisterCallback<API.Callbacks.UserStatsReceived>();
             this._UserStatsReceivedCallback.OnRun += this.OnUserStatsReceived;
 
             //this.UserStatsStoredCallback = new API.Callback(1102, new API.Callback.CallbackFunction(this.OnUserStatsStored));
 
             this.RefreshStats();
+        }
+
+        private void InitializeLanguageDropdown()
+        {
+            this._LanguageDropDownButton.DropDownItems.Clear();
+            foreach (var lang in API.LanguageManager.SupportedLanguages)
+            {
+                var item = new ToolStripMenuItem(lang.NativeName)
+                {
+                    Tag = lang.Code,
+                };
+                item.Click += (s, e) =>
+                {
+                    API.LanguageManager.CurrentLanguage = lang.Code;
+                    this.UpdateLanguageDropdownState();
+                    this.ApplyLocalization();
+                    this.RefreshStats();
+                };
+                this._LanguageDropDownButton.DropDownItems.Add(item);
+            }
+            this.UpdateLanguageDropdownState();
+        }
+
+        private void UpdateLanguageDropdownState()
+        {
+            string current = API.LanguageManager.CurrentLanguage;
+            foreach (ToolStripItem item in this._LanguageDropDownButton.DropDownItems)
+            {
+                if (item is ToolStripMenuItem menuContainer)
+                {
+                    menuContainer.Checked = string.Equals((string)menuContainer.Tag, current, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+        }
+
+        private void ApplyLocalization()
+        {
+            this._StoreButton.Text = API.Localization.CommitChanges;
+            this._StoreButton.ToolTipText = API.Localization.CommitChangesToolTip;
+            this._ReloadButton.Text = API.Localization.Refresh;
+            this._ReloadButton.ToolTipText = API.Localization.RefreshToolTip;
+            this._ResetButton.Text = API.Localization.Reset;
+            this._ResetButton.ToolTipText = API.Localization.ResetToolTip;
+            this._AchievementsTabPage.Text = API.Localization.AchievementsTab;
+            this._StatisticsTabPage.Text = API.Localization.StatisticsTab;
+
+            this._AchievementNameColumnHeader.Text = API.Localization.HeaderName;
+            this._AchievementDescriptionColumnHeader.Text = API.Localization.HeaderDescription;
+            this._AchievementUnlockTimeColumnHeader.Text = API.Localization.HeaderUnlockTime;
+
+            if (this._StatisticsDataGridView.Columns.Count >= 3)
+            {
+                this._StatisticsDataGridView.Columns[0].HeaderText = API.Localization.HeaderName;
+                this._StatisticsDataGridView.Columns[1].HeaderText = API.Localization.HeaderValue;
+                this._StatisticsDataGridView.Columns[2].HeaderText = API.Localization.HeaderExtra;
+            }
+
+            this._LockAllButton.Text = API.Localization.LockAll;
+            this._LockAllButton.ToolTipText = API.Localization.LockAllToolTip;
+            this._InvertAllButton.Text = API.Localization.InvertAll;
+            this._InvertAllButton.ToolTipText = API.Localization.InvertAllToolTip;
+            this._UnlockAllButton.Text = API.Localization.UnlockAll;
+            this._UnlockAllButton.ToolTipText = API.Localization.UnlockAllToolTip;
+
+            this._DisplayLabel.Text = API.Localization.ShowOnly;
+            this._DisplayLockedOnlyButton.Text = API.Localization.Locked;
+            this._DisplayUnlockedOnlyButton.Text = API.Localization.Unlocked;
+            this._MatchingStringLabel.Text = API.Localization.Filter;
+            this._MatchingStringTextBox.ToolTipText = API.Localization.MatchingStringToolTip;
+
+            this._EnableStatsEditingCheckBox.Text = API.Localization.EnableStatsEditing;
+            this._LanguageDropDownButton.Text = API.Localization.Language;
         }
 
         private void AddAchievementIcon(Stats.AchievementInfo info, Image icon)
@@ -159,7 +234,7 @@ namespace SAM.Game
                 return;
             }
 
-            this._DownloadStatusLabel.Text = $"Загрузка {this._IconQueue.Count} иконок...";
+            this._DownloadStatusLabel.Text = API.Localization.DownloadingIcons(this._IconQueue.Count);
             this._DownloadStatusLabel.Visible = true;
 
             var info = this._IconQueue[0];
@@ -173,28 +248,21 @@ namespace SAM.Game
 
         private static string TranslateError(int id) => id switch
         {
-            2 => "общая ошибка — обычно это означает, что вы не владеете игрой",
+            2 => API.Localization.GenericErrorNotOwned,
             _ => _($"{id}"),
         };
 
         private static string GetLocalizedString(KeyValue kv, string language, string defaultValue)
         {
-            var name = kv["russian"].AsString("");
+            var activeLanguage = API.LanguageManager.CurrentLanguage;
+
+            var name = kv[activeLanguage].AsString("");
             if (string.IsNullOrEmpty(name) == false)
             {
                 return name;
             }
 
-            if (string.IsNullOrEmpty(language) == false)
-            {
-                name = kv[language].AsString("");
-                if (string.IsNullOrEmpty(name) == false)
-                {
-                    return name;
-                }
-            }
-
-            if (language != "english")
+            if (activeLanguage != "english")
             {
                 name = kv["english"].AsString("");
                 if (string.IsNullOrEmpty(name) == false)
@@ -377,14 +445,14 @@ namespace SAM.Game
         {
             if (param.Result != 1)
             {
-                this._GameStatusLabel.Text = $"Ошибка при получении статистики: {TranslateError(param.Result)}";
+                this._GameStatusLabel.Text = API.Localization.ErrorRetrievingStats(TranslateError(param.Result));
                 this.EnableInput();
                 return;
             }
 
             if (this.LoadUserGameStatsSchema() == false)
             {
-                this._GameStatusLabel.Text = "Не удалось загрузить схему.";
+                this._GameStatusLabel.Text = API.Localization.FailedToLoadSchema;
                 this.EnableInput();
                 return;
             }
@@ -395,11 +463,11 @@ namespace SAM.Game
             }
             catch (Exception e)
             {
-                this._GameStatusLabel.Text = "Ошибка при обработке полученных достижений.";
+                this._GameStatusLabel.Text = API.Localization.ErrorHandlingAchievements;
                 this.EnableInput();
                 MessageBox.Show(
-                    "Ошибка при обработке полученных достижений:\n" + e,
-                    "Ошибка",
+                    API.Localization.ErrorHandlingAchievements + "\n" + e,
+                    API.Localization.Error,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
@@ -411,17 +479,17 @@ namespace SAM.Game
             }
             catch (Exception e)
             {
-                this._GameStatusLabel.Text = "Ошибка при обработке полученной статистики.";
+                this._GameStatusLabel.Text = API.Localization.ErrorHandlingStats;
                 this.EnableInput();
                 MessageBox.Show(
-                    "Ошибка при обработке полученной статистики:\n" + e,
-                    "Ошибка",
+                    API.Localization.ErrorHandlingStats + "\n" + e,
+                    API.Localization.Error,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
             }
 
-            this._GameStatusLabel.Text = $"Получено достижений: {this._AchievementListView.Items.Count}, статистик: {this._StatisticsDataGridView.Rows.Count}.";
+            this._GameStatusLabel.Text = API.Localization.RetrievedAchievementsAndStats(this._AchievementListView.Items.Count, this._StatisticsDataGridView.Rows.Count);
             this.EnableInput();
         }
 
@@ -437,11 +505,11 @@ namespace SAM.Game
             var callHandle = this._SteamClient.SteamUserStats.RequestUserStats(steamId);
             if (callHandle == API.CallHandle.Invalid)
             {
-                MessageBox.Show(this, "Ошибка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, API.Localization.Error, API.Localization.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            this._GameStatusLabel.Text = "Получение информации о статистике...";
+            this._GameStatusLabel.Text = API.Localization.RetrievingStatInfo;
             this.DisableInput();
         }
 
@@ -642,8 +710,8 @@ namespace SAM.Game
                 {
                     MessageBox.Show(
                         this,
-                        $"Произошла ошибка при установке состояния для {info.Id}, сохранение отменено.",
-                        "Ошибка",
+                        API.Localization.ErrorSettingState(info.Id),
+                        API.Localization.Error,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     return -1;
@@ -676,8 +744,8 @@ namespace SAM.Game
                     {
                         MessageBox.Show(
                             this,
-                            $"Произошла ошибка при установке значения для {stat.Id}, сохранение отменено.",
-                            "Ошибка",
+                            API.Localization.ErrorSettingValue(stat.Id),
+                            API.Localization.Error,
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                         return -1;
@@ -691,8 +759,8 @@ namespace SAM.Game
                     {
                         MessageBox.Show(
                             this,
-                            $"Произошла ошибка при установке значения для {stat.Id}, сохранение отменено.",
-                            "Ошибка",
+                            API.Localization.ErrorSettingValue(stat.Id),
+                            API.Localization.Error,
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                         return -1;
@@ -761,8 +829,8 @@ namespace SAM.Game
             {
                 MessageBox.Show(
                     this,
-                    "Произошла ошибка при сохранении, отмена.",
-                    "Ошибка",
+                    API.Localization.ErrorStoringAborting,
+                    API.Localization.Error,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return false;
@@ -795,8 +863,8 @@ namespace SAM.Game
 
             MessageBox.Show(
                 this,
-                $"Сохранено достижений: {achievements}, статистик: {stats}.",
-                "Информация",
+                API.Localization.StoredAchievementsAndStats(achievements, stats),
+                API.Localization.Information,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             this.RefreshStats();

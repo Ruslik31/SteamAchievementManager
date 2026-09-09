@@ -83,10 +83,12 @@
             // 
             // _MainToolStrip
             // 
+            this._LanguageDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
             this._MainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._StoreButton,
             this._ReloadButton,
-            this._ResetButton});
+            this._ResetButton,
+            this._LanguageDropDownButton});
             this._MainToolStrip.Location = new System.Drawing.Point(0, 0);
             this._MainToolStrip.Name = "_MainToolStrip";
             this._MainToolStrip.Size = new System.Drawing.Size(712, 25);
@@ -124,7 +126,15 @@
             this._ResetButton.Text = "Сбросить";
             this._ResetButton.ToolTipText = "Сбросить достижения и/или статистику для активной игры.";
             this._ResetButton.Click += new System.EventHandler(this.OnResetAllStats);
-            // 
+            //
+            // _LanguageDropDownButton
+            //
+            this._LanguageDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._LanguageDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._LanguageDropDownButton.Name = "_LanguageDropDownButton";
+            this._LanguageDropDownButton.Size = new System.Drawing.Size(70, 22);
+            this._LanguageDropDownButton.Text = "Language";
+            //
             // _AchievementImageList
             // 
             this._AchievementImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
@@ -425,5 +435,6 @@
         private System.Windows.Forms.ToolStripTextBox _MatchingStringTextBox;
         private System.Windows.Forms.ColumnHeader _AchievementUnlockTimeColumnHeader;
         private System.Windows.Forms.CheckBox _EnableStatsEditingCheckBox;
+        private System.Windows.Forms.ToolStripDropDownButton _LanguageDropDownButton;
     }
 }

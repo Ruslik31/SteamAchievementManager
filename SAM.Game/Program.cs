@@ -42,8 +42,8 @@ namespace SAM.Game
             if (long.TryParse(args[0], out appId) == false)
             {
                 MessageBox.Show(
-                    "Не удалось прочитать ID приложения из аргумента командной строки.",
-                    "Ошибка",
+                    API.Localization.ParseAppIdFailed,
+                    API.Localization.Error,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
@@ -52,8 +52,8 @@ namespace SAM.Game
             if (API.Steam.GetInstallPath() == Application.StartupPath)
             {
                 MessageBox.Show(
-                    "Инструмент не может запускаться из папки Steam.",
-                    "Ошибка",
+                    API.Localization.RunFromSteamDeclined,
+                    API.Localization.Error,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
@@ -70,28 +70,27 @@ namespace SAM.Game
                     if (e.Failure == API.ClientInitializeFailure.ConnectToGlobalUser)
                     {
                         MessageBox.Show(
-                            "Steam не запущен. Пожалуйста, запустите Steam и попробуйте снова.\n\n" +
-                            "Если игра доступна по Family Share, возможно, доступ заблокирован,\n" +
-                            "так как владелец аккаунта в данный момент играет.\n\n" +
+                            API.Localization.SteamNotRunning + "\n\n" +
+                            API.Localization.FamilyShareLocked + "\n\n" +
                             "(" + e.Message + ")",
-                            "Ошибка",
+                            API.Localization.Error,
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }
                     else if (string.IsNullOrEmpty(e.Message) == false)
                     {
                         MessageBox.Show(
-                            "Steam не запущен. Пожалуйста, запустите Steam и попробуйте снова.\n\n" +
+                            API.Localization.SteamNotRunning + "\n\n" +
                             "(" + e.Message + ")",
-                            "Ошибка",
+                            API.Localization.Error,
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }
                     else
                     {
                         MessageBox.Show(
-                            "Steam не запущен. Пожалуйста, запустите Steam и попробуйте снова.",
-                            "Ошибка",
+                            API.Localization.SteamNotRunning,
+                            API.Localization.Error,
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }
@@ -100,8 +99,8 @@ namespace SAM.Game
                 catch (DllNotFoundException)
                 {
                     MessageBox.Show(
-                        "Произошла непредвиденная ошибка!",
-                        "Ошибка",
+                        API.Localization.ExceptionalError,
+                        API.Localization.Error,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     return;

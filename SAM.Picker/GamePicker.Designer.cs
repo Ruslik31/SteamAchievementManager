@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ToolStripSeparator _ToolStripSeparator1;
             System.Windows.Forms.ToolStripSeparator _ToolStripSeparator2;
+            System.Windows.Forms.ToolStripSeparator _ToolStripSeparator3;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GamePicker));
             this._LogoImageList = new System.Windows.Forms.ImageList(this.components);
             this._CallbackTimer = new System.Windows.Forms.Timer(this.components);
@@ -45,6 +46,7 @@
             this._FilterDemosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._FilterModsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._FilterJunkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this._LanguageDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
             this._GameListView = new SAM.Picker.MyListView();
             this._PickerStatusStrip = new System.Windows.Forms.StatusStrip();
             this._PickerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -53,6 +55,7 @@
             this._ListWorker = new System.ComponentModel.BackgroundWorker();
             _ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             _ToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            _ToolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this._PickerToolStrip.SuspendLayout();
             this._PickerStatusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -66,6 +69,11 @@
             //
             _ToolStripSeparator2.Name = "_ToolStripSeparator2";
             _ToolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            //
+            // _ToolStripSeparator3
+            //
+            _ToolStripSeparator3.Name = "_ToolStripSeparator3";
+            _ToolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             //
             // _LogoImageList
             //
@@ -88,7 +96,9 @@
             _ToolStripSeparator2,
             this._FindGamesLabel,
             this._SearchGameTextBox,
-            this._FilterDropDownButton});
+            this._FilterDropDownButton,
+            _ToolStripSeparator3,
+            this._LanguageDropDownButton});
             this._PickerToolStrip.Location = new System.Drawing.Point(0, 0);
             this._PickerToolStrip.Name = "_PickerToolStrip";
             this._PickerToolStrip.Size = new System.Drawing.Size(742, 25);
@@ -172,12 +182,13 @@
             this._FilterModsMenuItem.Text = "Показывать &моды";
             this._FilterModsMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
             //
-            // _FilterJunkMenuItem
+            // _LanguageDropDownButton
             //
-            this._FilterJunkMenuItem.CheckOnClick = true;
-            this._FilterJunkMenuItem.Name = "_FilterJunkMenuItem";
-            this._FilterJunkMenuItem.Size = new System.Drawing.Size(180, 22);
-            this._FilterJunkMenuItem.Text = "Показывать &мусор";
+            this._LanguageDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._LanguageDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._LanguageDropDownButton.Name = "_LanguageDropDownButton";
+            this._LanguageDropDownButton.Size = new System.Drawing.Size(70, 22);
+            this._LanguageDropDownButton.Text = "Language";
             this._FilterJunkMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
             //
             // _GameListView
@@ -279,6 +290,7 @@
         private System.ComponentModel.BackgroundWorker _ListWorker;
         private System.Windows.Forms.ToolStripTextBox _SearchGameTextBox;
         private System.Windows.Forms.ToolStripLabel _FindGamesLabel;
+        private System.Windows.Forms.ToolStripDropDownButton _LanguageDropDownButton;
 
         #endregion
     }
