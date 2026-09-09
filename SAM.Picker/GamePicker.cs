@@ -98,7 +98,7 @@ namespace SAM.Picker
 
         private void DoDownloadList(object sender, DoWorkEventArgs e)
         {
-            this._PickerStatusLabel.Text = "Downloading game list...";
+            this._PickerStatusLabel.Text = "Загрузка списка игр...";
 
             byte[] bytes;
             using (WebClient downloader = new())
@@ -123,7 +123,7 @@ namespace SAM.Picker
                 }
             }
 
-            this._PickerStatusLabel.Text = "Checking game ownership...";
+            this._PickerStatusLabel.Text = "Проверка наличия игр...";
             foreach (var kv in pairs)
             {
                 this.AddGame(kv.Key, kv.Value);
@@ -135,7 +135,7 @@ namespace SAM.Picker
             if (e.Error != null || e.Cancelled == true)
             {
                 this.AddDefaultGames();
-                MessageBox.Show(e.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(e.Error.ToString(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             this.RefreshGames();
@@ -181,7 +181,7 @@ namespace SAM.Picker
 
             this._GameListView.VirtualListSize = this._FilteredGames.Count;
             this._PickerStatusLabel.Text =
-                $"Displaying {this._GameListView.Items.Count} games. Total {this._Games.Count} games.";
+                $"Отображено игр: {this._GameListView.Items.Count}. Всего игр: {this._Games.Count}.";
 
             if (this._GameListView.Items.Count > 0)
             {
@@ -328,7 +328,7 @@ namespace SAM.Picker
                     break;
                 }
 
-                this._DownloadStatusLabel.Text = $"Downloading {1 + this._LogoQueue.Count} game icons...";
+                this._DownloadStatusLabel.Text = $"Загрузка {1 + this._LogoQueue.Count} иконок игр...";
                 this._DownloadStatusLabel.Visible = true;
 
                 this._LogoWorker.RunWorkerAsync(info);
@@ -341,10 +341,19 @@ namespace SAM.Picker
 
             var currentLanguage = this._SteamClient.SteamApps008.GetCurrentGameLanguage();
 
-            candidate = this._SteamClient.SteamApps001.GetAppData(id, _($"small_capsule/{currentLanguage}"));
+            candidate = this._SteamClient.SteamApps001.GetAppData(id, "small_capsule/russian");
             if (string.IsNullOrEmpty(candidate) == false)
             {
                 return _($"https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/{id}/{candidate}");
+            }
+
+            if (string.IsNullOrEmpty(currentLanguage) == false && currentLanguage != "russian")
+            {
+                candidate = this._SteamClient.SteamApps001.GetAppData(id, _($"small_capsule/{currentLanguage}"));
+                if (string.IsNullOrEmpty(candidate) == false)
+                {
+                    return _($"https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/{id}/{candidate}");
+                }
             }
 
             if (currentLanguage != "english")
@@ -458,8 +467,8 @@ namespace SAM.Picker
             {
                 MessageBox.Show(
                     this,
-                    "Failed to start SAM.Game.exe.",
-                    "Error",
+                    "Не удалось запустить SAM.Game.exe.",
+                    "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
@@ -479,8 +488,8 @@ namespace SAM.Picker
             {
                 MessageBox.Show(
                     this,
-                    "Please enter a valid game ID.",
-                    "Error",
+                    "Пожалуйста, введите корректный ID игры.",
+                    "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
@@ -488,7 +497,7 @@ namespace SAM.Picker
 
             if (this.OwnsGame(id) == false)
             {
-                MessageBox.Show(this, "You don't own that game.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "У вас нет этой игры.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

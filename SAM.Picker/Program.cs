@@ -33,8 +33,8 @@ namespace SAM.Picker
             if (API.Steam.GetInstallPath() == Application.StartupPath)
             {
                 MessageBox.Show(
-                    "This tool declines to being run from the Steam directory.",
-                    "Error",
+                    "Инструмент не может запускаться из папки Steam.",
+                    "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
@@ -51,17 +51,17 @@ namespace SAM.Picker
                     if (string.IsNullOrEmpty(e.Message) == false)
                     {
                         MessageBox.Show(
-                            "Steam is not running. Please start Steam then run this tool again.\n\n" +
+                            "Steam не запущен. Пожалуйста, запустите Steam и попробуйте снова.\n\n" +
                             "(" + e.Message + ")",
-                            "Error",
+                            "Ошибка",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }
                     else
                     {
                         MessageBox.Show(
-                            "Steam is not running. Please start Steam then run this tool again.",
-                            "Error",
+                            "Steam не запущен. Пожалуйста, запустите Steam и попробуйте снова.",
+                            "Ошибка",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }
@@ -70,8 +70,8 @@ namespace SAM.Picker
                 catch (DllNotFoundException)
                 {
                     MessageBox.Show(
-                        "You've caused an exceptional error!",
-                        "Error",
+                        "Произошла непредвиденная ошибка!",
+                        "Ошибка",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     return;

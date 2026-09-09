@@ -63,17 +63,17 @@ namespace SAM.Game
 
             this._StatisticsDataGridView.AutoGenerateColumns = false;
 
-            this._StatisticsDataGridView.Columns.Add("name", "Name");
+            this._StatisticsDataGridView.Columns.Add("name", "Название");
             this._StatisticsDataGridView.Columns[0].ReadOnly = true;
             this._StatisticsDataGridView.Columns[0].Width = 200;
             this._StatisticsDataGridView.Columns[0].DataPropertyName = "DisplayName";
 
-            this._StatisticsDataGridView.Columns.Add("value", "Value");
+            this._StatisticsDataGridView.Columns.Add("value", "Значение");
             this._StatisticsDataGridView.Columns[1].ReadOnly = this._EnableStatsEditingCheckBox.Checked == false;
             this._StatisticsDataGridView.Columns[1].Width = 90;
             this._StatisticsDataGridView.Columns[1].DataPropertyName = "Value";
 
-            this._StatisticsDataGridView.Columns.Add("extra", "Extra");
+            this._StatisticsDataGridView.Columns.Add("extra", "Дополнительно");
             this._StatisticsDataGridView.Columns[2].ReadOnly = true;
             this._StatisticsDataGridView.Columns[2].Width = 200;
             this._StatisticsDataGridView.Columns[2].DataPropertyName = "Extra";
@@ -159,7 +159,7 @@ namespace SAM.Game
                 return;
             }
 
-            this._DownloadStatusLabel.Text = $"Downloading {this._IconQueue.Count} icons...";
+            this._DownloadStatusLabel.Text = $"Загрузка {this._IconQueue.Count} иконок...";
             this._DownloadStatusLabel.Visible = true;
 
             var info = this._IconQueue[0];
@@ -173,16 +173,25 @@ namespace SAM.Game
 
         private static string TranslateError(int id) => id switch
         {
-            2 => "generic error -- this usually means you don't own the game",
+            2 => "общая ошибка — обычно это означает, что вы не владеете игрой",
             _ => _($"{id}"),
         };
 
         private static string GetLocalizedString(KeyValue kv, string language, string defaultValue)
         {
-            var name = kv[language].AsString("");
+            var name = kv["russian"].AsString("");
             if (string.IsNullOrEmpty(name) == false)
             {
                 return name;
+            }
+
+            if (string.IsNullOrEmpty(language) == false)
+            {
+                name = kv[language].AsString("");
+                if (string.IsNullOrEmpty(name) == false)
+                {
+                    return name;
+                }
             }
 
             if (language != "english")
@@ -368,14 +377,14 @@ namespace SAM.Game
         {
             if (param.Result != 1)
             {
-                this._GameStatusLabel.Text = $"Error while retrieving stats: {TranslateError(param.Result)}";
+                this._GameStatusLabel.Text = $"Ошибка при получении статистики: {TranslateError(param.Result)}";
                 this.EnableInput();
                 return;
             }
 
             if (this.LoadUserGameStatsSchema() == false)
             {
-                this._GameStatusLabel.Text = "Failed to load schema.";
+                this._GameStatusLabel.Text = "Не удалось загрузить схему.";
                 this.EnableInput();
                 return;
             }
@@ -386,11 +395,11 @@ namespace SAM.Game
             }
             catch (Exception e)
             {
-                this._GameStatusLabel.Text = "Error when handling achievements retrieval.";
+                this._GameStatusLabel.Text = "Ошибка при обработке полученных достижений.";
                 this.EnableInput();
                 MessageBox.Show(
-                    "Error when handling achievements retrieval:\n" + e,
-                    "Error",
+                    "Ошибка при обработке полученных достижений:\n" + e,
+                    "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
@@ -402,17 +411,17 @@ namespace SAM.Game
             }
             catch (Exception e)
             {
-                this._GameStatusLabel.Text = "Error when handling stats retrieval.";
+                this._GameStatusLabel.Text = "Ошибка при обработке полученной статистики.";
                 this.EnableInput();
                 MessageBox.Show(
-                    "Error when handling stats retrieval:\n" + e,
-                    "Error",
+                    "Ошибка при обработке полученной статистики:\n" + e,
+                    "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
             }
 
-            this._GameStatusLabel.Text = $"Retrieved {this._AchievementListView.Items.Count} achievements and {this._StatisticsDataGridView.Rows.Count} statistics.";
+            this._GameStatusLabel.Text = $"Получено достижений: {this._AchievementListView.Items.Count}, статистик: {this._StatisticsDataGridView.Rows.Count}.";
             this.EnableInput();
         }
 
@@ -428,11 +437,11 @@ namespace SAM.Game
             var callHandle = this._SteamClient.SteamUserStats.RequestUserStats(steamId);
             if (callHandle == API.CallHandle.Invalid)
             {
-                MessageBox.Show(this, "Failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Ошибка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            this._GameStatusLabel.Text = "Retrieving stat information...";
+            this._GameStatusLabel.Text = "Получение информации о статистике...";
             this.DisableInput();
         }
 
@@ -633,8 +642,8 @@ namespace SAM.Game
                 {
                     MessageBox.Show(
                         this,
-                        $"An error occurred while setting the state for {info.Id}, aborting store.",
-                        "Error",
+                        $"Произошла ошибка при установке состояния для {info.Id}, сохранение отменено.",
+                        "Ошибка",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     return -1;
@@ -667,8 +676,8 @@ namespace SAM.Game
                     {
                         MessageBox.Show(
                             this,
-                            $"An error occurred while setting the value for {stat.Id}, aborting store.",
-                            "Error",
+                            $"Произошла ошибка при установке значения для {stat.Id}, сохранение отменено.",
+                            "Ошибка",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                         return -1;
@@ -682,8 +691,8 @@ namespace SAM.Game
                     {
                         MessageBox.Show(
                             this,
-                            $"An error occurred while setting the value for {stat.Id}, aborting store.",
-                            "Error",
+                            $"Произошла ошибка при установке значения для {stat.Id}, сохранение отменено.",
+                            "Ошибка",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                         return -1;
@@ -752,8 +761,8 @@ namespace SAM.Game
             {
                 MessageBox.Show(
                     this,
-                    "An error occurred while storing, aborting.",
-                    "Error",
+                    "Произошла ошибка при сохранении, отмена.",
+                    "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return false;
@@ -786,8 +795,8 @@ namespace SAM.Game
 
             MessageBox.Show(
                 this,
-                $"Stored {achievements} achievements and {stats} statistics.",
-                "Information",
+                $"Сохранено достижений: {achievements}, статистик: {stats}.",
+                "Информация",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             this.RefreshStats();
@@ -805,13 +814,13 @@ namespace SAM.Game
             {
                 e.ThrowException = false;
                 e.Cancel = true;
-                view.Rows[e.RowIndex].ErrorText = "Stat is protected! -- you can't modify it";
+                view.Rows[e.RowIndex].ErrorText = "Статистика защищена! Вы не можете её изменить";
             }
             else
             {
                 e.ThrowException = false;
                 e.Cancel = true;
-                view.Rows[e.RowIndex].ErrorText = "Invalid value";
+                view.Rows[e.RowIndex].ErrorText = "Некорректное значение";
             }
         }
 
@@ -829,8 +838,8 @@ namespace SAM.Game
         private void OnResetAllStats(object sender, EventArgs e)
         {
             if (MessageBox.Show(
-                "Are you absolutely sure you want to reset stats?",
-                "Warning",
+                "Вы абсолютно уверены, что хотите сбросить статистику?",
+                "Предупреждение",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning) == DialogResult.No)
             {
@@ -838,14 +847,14 @@ namespace SAM.Game
             }
 
             bool achievementsToo = DialogResult.Yes == MessageBox.Show(
-                "Do you want to reset achievements too?",
-                "Question",
+                "Вы хотите сбросить и достижения тоже?",
+                "Вопрос",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
             if (MessageBox.Show(
-                "Really really sure?",
-                "Warning",
+                "Вы точно-точно уверены?",
+                "Предупреждение",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Error) == DialogResult.No)
             {
@@ -854,7 +863,7 @@ namespace SAM.Game
 
             if (this._SteamClient.SteamUserStats.ResetAllStats(achievementsToo) == false)
             {
-                MessageBox.Show(this, "Failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Ошибка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -882,8 +891,8 @@ namespace SAM.Game
             {
                 MessageBox.Show(
                     this,
-                    "Sorry, but this is a protected achievement and cannot be managed with Steam Achievement Manager.",
-                    "Error",
+                    "К сожалению, это защищённое достижение, и им нельзя управлять с помощью Steam Achievement Manager.",
+                    "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 e.NewValue = e.CurrentValue;

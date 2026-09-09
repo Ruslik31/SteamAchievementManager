@@ -101,7 +101,7 @@
             this._RefreshGamesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this._RefreshGamesButton.Name = "_RefreshGamesButton";
             this._RefreshGamesButton.Size = new System.Drawing.Size(105, 22);
-            this._RefreshGamesButton.Text = "Refresh Games";
+            this._RefreshGamesButton.Text = "Обновить список";
             this._RefreshGamesButton.Click += new System.EventHandler(this.OnRefresh);
             //
             // _AddGameTextBox
@@ -116,14 +116,14 @@
             this._AddGameButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this._AddGameButton.Name = "_AddGameButton";
             this._AddGameButton.Size = new System.Drawing.Size(83, 22);
-            this._AddGameButton.Text = "Add Game";
+            this._AddGameButton.Text = "Добавить игру";
             this._AddGameButton.Click += new System.EventHandler(this.OnAddGame);
             //
             // _FindGamesLabel
             //
             this._FindGamesLabel.Name = "_FindGamesLabel";
             this._FindGamesLabel.Size = new System.Drawing.Size(33, 22);
-            this._FindGamesLabel.Text = "Filter";
+            this._FindGamesLabel.Text = "Фильтр";
             //
             // _SearchGameTextBox
             //
@@ -144,7 +144,7 @@
             this._FilterDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this._FilterDropDownButton.Name = "_FilterDropDownButton";
             this._FilterDropDownButton.Size = new System.Drawing.Size(29, 22);
-            this._FilterDropDownButton.Text = "Game filtering";
+            this._FilterDropDownButton.Text = "Фильтр игр";
             //
             // _FilterGamesMenuItem
             //
@@ -153,7 +153,7 @@
             this._FilterGamesMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this._FilterGamesMenuItem.Name = "_FilterGamesMenuItem";
             this._FilterGamesMenuItem.Size = new System.Drawing.Size(180, 22);
-            this._FilterGamesMenuItem.Text = "Show &games";
+            this._FilterGamesMenuItem.Text = "Показывать &игры";
             this._FilterGamesMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
             //
             // _FilterDemosMenuItem
@@ -161,7 +161,7 @@
             this._FilterDemosMenuItem.CheckOnClick = true;
             this._FilterDemosMenuItem.Name = "_FilterDemosMenuItem";
             this._FilterDemosMenuItem.Size = new System.Drawing.Size(180, 22);
-            this._FilterDemosMenuItem.Text = "Show &demos";
+            this._FilterDemosMenuItem.Text = "Показывать &демо";
             this._FilterDemosMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
             //
             // _FilterModsMenuItem
@@ -169,7 +169,7 @@
             this._FilterModsMenuItem.CheckOnClick = true;
             this._FilterModsMenuItem.Name = "_FilterModsMenuItem";
             this._FilterModsMenuItem.Size = new System.Drawing.Size(180, 22);
-            this._FilterModsMenuItem.Text = "Show &mods";
+            this._FilterModsMenuItem.Text = "Показывать &моды";
             this._FilterModsMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
             //
             // _FilterJunkMenuItem
@@ -177,7 +177,7 @@
             this._FilterJunkMenuItem.CheckOnClick = true;
             this._FilterJunkMenuItem.Name = "_FilterJunkMenuItem";
             this._FilterJunkMenuItem.Size = new System.Drawing.Size(180, 22);
-            this._FilterJunkMenuItem.Text = "Show &junk";
+            this._FilterJunkMenuItem.Text = "Показывать &мусор";
             this._FilterJunkMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
             //
             // _GameListView
@@ -226,7 +226,7 @@
             this._DownloadStatusLabel.Image = global::SAM.Picker.Resources.Download;
             this._DownloadStatusLabel.Name = "_DownloadStatusLabel";
             this._DownloadStatusLabel.Size = new System.Drawing.Size(111, 17);
-            this._DownloadStatusLabel.Text = "Download status";
+            this._DownloadStatusLabel.Text = "Статус загрузки";
             this._DownloadStatusLabel.Visible = false;
             //
             // _LogoWorker
@@ -251,7 +251,7 @@
             this.Controls.Add(this._PickerToolStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "GamePicker";
-            this.Text = "Steam Achievement Manager 7.0 | Pick a game... Any game...";
+            this.Text = "Steam Achievement Manager 7.0 | Выберите игру...";
             this._PickerToolStrip.ResumeLayout(false);
             this._PickerToolStrip.PerformLayout();
             this._PickerStatusStrip.ResumeLayout(false);
